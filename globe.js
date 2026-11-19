@@ -11,9 +11,9 @@
   var CX = W / 2, CY = H / 2;
 
   var state = {
-    rotY: -0.6,        // start facing the Atlantic / Europe-Africa
+    rotY: -0.2,        // start facing the Atlantic / Europe-Africa
     rotX: 0.32,        // slight tilt so the north reads well
-    targetRotY: -0.6,
+    targetRotY: -0.2,
     targetRotX: 0.32,
     zoom: 1,
     paused: false,
@@ -23,12 +23,15 @@
   };
 
   // Precompute 3D points from lat/lon.
+  // Correct mapping (east to the right when centred): x = cos(lat) sin(lon),
+  // y = sin(lat), z = cos(lat) cos(lon). The previous build had x and z
+  // swapped, which mirrored the map east-west and reversed the spin.
   var pts = LAND_DOTS.map(function (d) {
     var lat = d[0] * Math.PI / 180, lon = d[1] * Math.PI / 180;
     return {
-      x: Math.cos(lat) * Math.cos(lon),
+      x: Math.cos(lat) * Math.sin(lon),
       y: Math.sin(lat),
-      z: Math.cos(lat) * Math.sin(lon)
+      z: Math.cos(lat) * Math.cos(lon)
     };
   });
 
@@ -36,9 +39,9 @@
   var tehran3 = (function () {
     var lat = TEHRAN.lat * Math.PI / 180, lon = TEHRAN.lon * Math.PI / 180;
     return {
-      x: Math.cos(lat) * Math.cos(lon),
+      x: Math.cos(lat) * Math.sin(lon),
       y: Math.sin(lat),
-      z: Math.cos(lat) * Math.sin(lon)
+      z: Math.cos(lat) * Math.cos(lon)
     };
   })();
 
@@ -135,7 +138,9 @@
       state.idle += dt;
       if (state.idle > 2) {
         // Slow auto-rotation: one full turn in ~240 seconds.
-        state.rotY += dt * (Math.PI * 2 / 240);
+        // rotY decreases so the surface travels left-to-right, like the Earth.
+        state.rotY -= dt * (Math.PI * 2 / 240);
+        state.targetRotY = state.rotY;
       }
     }
     // Ease toward target after dragging.
@@ -164,7 +169,8 @@
     var p = pos(e);
     if (state.dragging) {
       var dx = p.x - state.lastX, dy = p.y - state.lastY;
-      state.targetRotY += dx * 0.005;
+      // Dragging right pulls the surface right (effective longitude grows).
+      state.targetRotY -= dx * 0.006;
       state.targetRotX = Math.max(-0.9, Math.min(0.9, state.targetRotX + dy * 0.003));
       state.rotY = state.targetRotY;
       state.rotX = state.targetRotX;
@@ -176,7 +182,7 @@
     if (markerScreen) {
       var d = Math.hypot(p.x - markerScreen.x, p.y - markerScreen.y);
       if (d < 20) {
-        callout.innerHTML = 'Exhibition · One Week with the Iranian Society of Painters · Tehran, Iran<em>9–19 October 2026</em>';
+        callout.innerHTML = 'Made in Tehran · Exhibited: One Week with the Iranian Society of Painters, Tehran, Iran<em>9–19 October 2026</em>';
         callout.hidden = false;
         canvas.style.cursor = 'pointer';
         return;

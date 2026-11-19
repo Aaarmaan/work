@@ -11,7 +11,8 @@ overlay.
   Tehran 2026). No invented titles, dimensions, prices or collector places.
 - The globe is a self-contained canvas dotted world map (land dots sampled
   from world-atlas land-110m). It auto-rotates, drags, pauses, zooms, and
-  carries one real marker: the 2026 Tehran exhibition.
+  carries one real marker: Tehran, where the works were made and exhibited
+  (One Week with the Iranian Society of Painters, 9–19 Oct 2026).
 - Images are hosted on armanmahmoudi.ir/gallery/ and referenced from there,
   so this repository stays text-only (HTML, CSS, JS)
 - Static site, served free by GitHub Pages
