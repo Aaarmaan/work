@@ -143,20 +143,31 @@
 <div class="overlay" id="overlay" hidden>
   <div class="ov-panel">
     <div class="ov-top">
-      <button id="ovClose">✕ Close</button>
+      <button id="ovBack">‹ All paintings</button>
       <span class="ov-nav">
         <button id="ovPrev" aria-label="Previous work">←</button>
         <button id="ovNext" aria-label="Next work">→</button>
       </span>
     </div>
+    <div class="ov-code" id="ovCode"></div>
     <h2 id="ovTitle"></h2>
-    <div class="ov-tabs"><span class="ov-tab on">Painting →</span></div>
+    <div class="ov-tabs">
+      <button class="ov-tab on" data-tab="painting">Painting</button>
+      <button class="ov-tab" data-tab="sketch">Sketch</button>
+      <button class="ov-tab" data-tab="process">Process</button>
+      <button class="ov-tab" data-tab="film">Film</button>
+    </div>
     <table class="ov-specs" id="ovSpecs"></table>
+    <div class="ov-story">
+      <button id="ovStoryBtn">Story <span id="ovStoryPlus">+</span></button>
+      <p id="ovStoryText" hidden></p>
+    </div>
     <button class="ov-timeline" id="ovTimeline">View full timeline ↓</button>
   </div>
   <div class="ov-viewer">
     <span class="ov-count" id="ovCount"></span>
-    <img id="ovImg" src="" alt="Artwork by Arman Mahmoudi">
+    <div class="ov-frame framed" id="ovFrame"><img id="ovImg" src="" alt="Artwork by Arman Mahmoudi"></div>
+    <div class="ov-note" id="ovNote" hidden></div>
     <button class="ov-edge ov-edge-l" id="ovEdgePrev" aria-label="Previous image">‹</button>
     <button class="ov-edge ov-edge-r" id="ovEdgeNext" aria-label="Next image">›</button>
   </div>

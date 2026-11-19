@@ -24,6 +24,15 @@ var WORKS = [
   { file: 'dr-5.jpg', series: 'Drawing', title: 'Drawing', year: '2022', group: 'dr2022', medium: '', dims: '', n: 3, of: 3 }
 ];
 
+/* Catalogue codes, in the model site's format: OR-<year>-<sequence>. */
+var CODES = {
+  'g1-1.jpg': 'OR-2022-01', 'g1-2.jpg': 'OR-2022-02', 'g1-3.jpg': 'OR-2022-03',
+  'g1-4.jpg': 'OR-2022-04', 'g1-5.jpg': 'OR-2022-05',
+  'g2-1.png': 'OR-2024-01', 'g2-2.png': 'OR-2024-02', 'g2-3.png': 'OR-2024-03',
+  'dr-1.jpg': 'OR-2025-01', 'dr-2.jpg': 'OR-2025-02',
+  'dr-3.jpg': 'OR-2022-06', 'dr-4.jpg': 'OR-2022-07', 'dr-5.jpg': 'OR-2022-08'
+};
+
 var grid = document.getElementById('grid');
 var count = document.getElementById('count');
 var search = document.getElementById('search');
@@ -134,19 +143,49 @@ document.querySelectorAll('.pills .pill').forEach(function (pill) {
    views 1-3 are zoomed detail crops of the same painting. */
 var overlay = document.getElementById('overlay');
 var ovImg = document.getElementById('ovImg');
+var ovFrame = document.getElementById('ovFrame');
+var ovNote = document.getElementById('ovNote');
 var ovTitle = document.getElementById('ovTitle');
+var ovCode = document.getElementById('ovCode');
 var ovSpecs = document.getElementById('ovSpecs');
 var ovCount = document.getElementById('ovCount');
 var ovPrev = document.getElementById('ovPrev');
 var ovNext = document.getElementById('ovNext');
+var ovStoryText = document.getElementById('ovStoryText');
+var ovStoryPlus = document.getElementById('ovStoryPlus');
 var ovIndex = 0;
 var viewIndex = 0;
+var currentTab = 'painting';
 var VIEWS = 4;
 var VIEW_POS = ['', '20% 15%', '50% 45%', '80% 80%'];
+var TAB_NOTES = {
+  sketch: 'No sketch recorded for this work yet.',
+  process: 'No process photos for this work yet.',
+  film: 'No film for this work yet.'
+};
 
 function specRow(label, value) {
   if (!value) return '';
   return '<tr><td>' + label + '</td><td>' + value + '</td></tr>';
+}
+
+function storyOf(w) {
+  if (w.series === 'Levitation') return 'From the Levitation series — paintings made in Tehran, Iran.';
+  return 'A drawing made in Tehran, Iran.';
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.ov-tab').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-tab') === tab);
+  });
+  var painting = tab === 'painting';
+  ovFrame.hidden = !painting;
+  ovNote.hidden = painting;
+  ovCount.hidden = !painting;
+  document.getElementById('ovEdgePrev').hidden = !painting;
+  document.getElementById('ovEdgeNext').hidden = !painting;
+  if (!painting) ovNote.textContent = TAB_NOTES[tab];
 }
 
 function showOverlay() {
@@ -154,6 +193,8 @@ function showOverlay() {
   ovImg.src = BASE + w.file;
   ovImg.className = viewIndex === 0 ? '' : 'detail';
   ovImg.style.objectPosition = VIEW_POS[viewIndex];
+  ovFrame.className = 'ov-frame' + (viewIndex === 0 ? ' framed' : '');
+  ovCode.textContent = CODES[w.file] || '';
   ovTitle.textContent = w.title;
   ovSpecs.innerHTML =
     specRow('Title', w.title) +
@@ -162,6 +203,9 @@ function showOverlay() {
     specRow('Series', w.series) +
     specRow('Dimensions', w.dims) +
     specRow('Work', w.n + ' of ' + w.of);
+  ovStoryText.textContent = storyOf(w);
+  ovStoryText.hidden = true;
+  ovStoryPlus.textContent = '+';
   ovCount.textContent = 'image ' + (viewIndex + 1) + ' of ' + VIEWS + ' — ' + (ovIndex + 1) + ' / ' + visible.length;
   ovPrev.disabled = ovIndex === 0;
   ovNext.disabled = ovIndex === visible.length - 1;
@@ -169,6 +213,7 @@ function showOverlay() {
 function openOverlay(i) {
   ovIndex = i;
   viewIndex = 0;
+  showTab('painting');
   showOverlay();
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
@@ -182,13 +227,23 @@ function stepWork(d) {
   if (next < 0 || next >= visible.length) return;
   ovIndex = next;
   viewIndex = 0;
+  showTab('painting');
   showOverlay();
 }
 function stepView(d) {
+  if (currentTab !== 'painting') return;
   viewIndex = (viewIndex + d + VIEWS) % VIEWS;
   showOverlay();
 }
-document.getElementById('ovClose').onclick = closeOverlay;
+document.getElementById('ovBack').onclick = closeOverlay;
+document.querySelectorAll('.ov-tab').forEach(function (b) {
+  b.onclick = function () { showTab(b.getAttribute('data-tab')); };
+});
+document.getElementById('ovStoryBtn').onclick = function () {
+  var open = ovStoryText.hidden;
+  ovStoryText.hidden = !open;
+  ovStoryPlus.textContent = open ? '−' : '+';
+};
 ovPrev.onclick = function () { stepWork(-1); };
 ovNext.onclick = function () { stepWork(1); };
 document.getElementById('ovEdgePrev').onclick = function () { stepView(-1); };
