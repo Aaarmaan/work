@@ -1,0 +1,107 @@
+/* Arman Mahmoudi — Body of Work catalog. Dark mode, Times serif, gold accents.
+   Same palette as armanmahmoudi.ir: black background, gold #D9A45B / #BC823A. */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: #000; color: #ddd;
+  font-family: "Times New Roman", Times, serif;
+  min-height: 100%;
+}
+a { color: #999; text-decoration: none; transition: color .2s; }
+a:hover { color: #FFC; }
+
+header {
+  border-bottom: 1px solid #222;
+  padding: 22px 0 14px 0; text-align: center;
+}
+header .brand {
+  display: block; color: #94662D; font-size: 22px; letter-spacing: 2px; margin-bottom: 12px;
+}
+header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 30px; }
+header nav a { color: #555; font-size: 15px; letter-spacing: 2px; }
+header nav a.active, header nav a:hover { color: #e2b16a; }
+
+main { max-width: 1100px; margin: 0 auto; padding: 44px 22px 60px 22px; }
+h1 {
+  color: #BC823A; font-weight: normal; font-size: 30px;
+  letter-spacing: 3px; margin: 0 0 10px 0;
+}
+.sub { color: #999; font-size: 18px; line-height: 1.7; margin: 0 0 28px 0; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.filters button {
+  background: transparent; color: #999; border: 1px solid #333;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 13px; letter-spacing: 2px; padding: 8px 16px; cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.filters button:hover { color: #FFC; border-color: #94662D; }
+.filters button.on { color: #D9A45B; border-color: #94662D; }
+.count { color: #777; letter-spacing: 2px; font-size: 14px; margin: 0 0 24px 0; }
+
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px;
+}
+.grid figure { margin: 0; }
+.grid img {
+  width: 100%; height: 320px; object-fit: contain; display: block;
+  border: 1px solid #333; cursor: pointer; background: #0a0a0a;
+  transition: border-color .2s;
+}
+.grid img:hover { border-color: #94662D; }
+.grid figcaption {
+  color: #999; letter-spacing: 2px; font-size: 13px; margin-top: 8px; text-align: center;
+}
+
+section { margin-bottom: 64px; }
+section h2 {
+  color: #BC823A; font-weight: normal; font-size: 22px;
+  letter-spacing: 3px; margin: 0 0 20px 0;
+}
+section h3 {
+  color: #BC823A; font-weight: normal; font-size: 17px;
+  letter-spacing: 3px; margin: 28px 0 10px 0;
+}
+section p { font-size: 18px; line-height: 1.7; color: #ccc; margin: 0 0 8px 0; }
+section p.muted, .muted { color: #777; }
+
+footer { text-align: center; color: #555; font-size: 14px; padding: 26px 0 20px 0; letter-spacing: 1px; }
+
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,.96);
+}
+.lightbox.open { display: block; }
+.lightbox img {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  max-width: 92%; max-height: 84%; object-fit: contain;
+}
+.lb-close {
+  position: absolute; top: 14px; right: 22px; z-index: 3;
+  background: none; border: none; color: #D9A45B; font-size: 40px;
+  font-family: "Times New Roman", Times, serif; cursor: pointer; line-height: 1;
+}
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  background: none; border: none; color: #D9A45B; font-size: 56px;
+  font-family: "Times New Roman", Times, serif; cursor: pointer; line-height: 1;
+  padding: 0 18px;
+}
+.lb-prev { left: 0; }
+.lb-next { right: 0; }
+.lb-cap {
+  position: absolute; bottom: 22px; left: 0; right: 0; text-align: center;
+  color: #999; letter-spacing: 2px; font-size: 15px;
+}
+.lb-cap #lbNum { color: #777; margin-left: 18px; }
+
+@media (max-width: 700px) {
+  main { padding: 36px 16px 40px 16px; }
+  h1 { font-size: 26px; letter-spacing: 2px; }
+  header .brand { font-size: 19px; letter-spacing: 1px; }
+  header nav { gap: 10px 16px; }
+  header nav a { font-size: 13px; letter-spacing: 1px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .grid img { height: 210px; }
+  .lb-nav { font-size: 44px; padding: 0 8px; }
+}

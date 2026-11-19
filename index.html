@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Body of Work — Arman Mahmoudi</title>
+<meta name="description" content="The catalogued body of work of Arman Mahmoudi — Levitation paintings and drawings.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="./">ARMAN MAHMOUDI</a>
+  <nav>
+    <a href="#works" class="active">BODY OF WORK</a>
+    <a href="#cv">CV</a>
+    <a href="#about">ABOUT</a>
+    <a href="https://instagram.com/armanmahmoudi.art" target="_blank" rel="noopener">CONTACT</a>
+  </nav>
+</header>
+
+<main>
+  <section id="works">
+    <h1>Body of Work</h1>
+    <p class="sub">The catalogued body of work — paintings and drawings</p>
+
+    <div class="filters" id="filters">
+      <button data-filter="all" class="on">ALL</button>
+      <button data-filter="lev2022">LEVITATION · 2022</button>
+      <button data-filter="lev2024">LEVITATION · 2024</button>
+      <button data-filter="dr2025">DRAWING · 2025</button>
+      <button data-filter="dr2022">DRAWING · 2022</button>
+    </div>
+    <p class="count" id="count"></p>
+
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="cv">
+    <h2>CV</h2>
+    <h3>GROUP EXHIBITIONS &amp; EVENTS</h3>
+    <p>2026 — “One Week with the Iranian Society of Painters” (Second Edition), Iranian Artists Forum, Tehran, 9–19 October 2026</p>
+    <p class="muted">Certificate of appreciation — Iranian Society of Painters</p>
+    <h3>SELECTED SERIES</h3>
+    <p>Levitation — 2022</p>
+    <p>Levitation — 2024</p>
+  </section>
+
+  <section id="about">
+    <h2>ABOUT</h2>
+    <p>ARMAN MAHMOUDI</p>
+    <p><a href="https://instagram.com/armanmahmoudi.art" target="_blank" rel="noopener">Instagram — @armanmahmoudi.art</a></p>
+    <p><a href="https://armanmahmoudi.ir">armanmahmoudi.ir</a></p>
+  </section>
+</main>
+
+<footer>© Arman Mahmoudi</footer>
+
+<div class="lightbox" id="lb">
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+  <img id="lbImg" src="" alt="Artwork by Arman Mahmoudi">
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next">›</button>
+  <div class="lb-cap"><span id="lbLabel"></span><span id="lbNum"></span></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
