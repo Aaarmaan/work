@@ -51,24 +51,38 @@
       <button id="zoomOut" aria-label="Zoom out">−</button>
     </div>
     <div class="callout" id="callout" hidden></div>
+    <div class="marker-card" id="markerCard" hidden>
+      <button class="mc-close" id="markerClose" aria-label="Close">✕</button>
+      <img src="https://armanmahmoudi.ir/gallery/g1-1.jpg" alt="Levitation — Arman Mahmoudi">
+      <div class="mc-body">
+        <strong>Levitation</strong>
+        <span>Untitled · Mixed Media · 50 × 70 cm</span>
+        <span>Made in Tehran, Iran · 2022</span>
+        <a href="#catalog" id="markerLink">View the collection →</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="timeline" id="timeline">
   <div class="tl-events">
     <div class="tl-event" style="left:0%">
+      <span class="tl-year">2022</span>
       <span class="tl-label">Levitation series</span>
       <span class="tl-dot"></span>
     </div>
     <div class="tl-event" style="left:50%">
+      <span class="tl-year">2024</span>
       <span class="tl-label">Levitation series</span>
       <span class="tl-dot"></span>
     </div>
     <div class="tl-event" style="left:75%">
+      <span class="tl-year">2025</span>
       <span class="tl-label">Drawings</span>
       <span class="tl-dot"></span>
     </div>
     <div class="tl-event tl-right">
+      <span class="tl-year">2026</span>
       <span class="tl-label">One Week with the Iranian Society of Painters, Iranian Artists Forum, Tehran <em>9–19 Oct 2026</em></span>
       <span class="tl-dot big"></span>
     </div>
@@ -116,7 +130,7 @@
       <a href="https://instagram.com/armanmahmoudi.art" target="_blank" rel="noopener">Contact</a>
     </div>
     <div>
-      <span class="foot-head">Follow:</span>
+      <span class="foot-head">Watch me paint:</span>
       <a href="https://instagram.com/armanmahmoudi.art" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
@@ -137,11 +151,7 @@
     </div>
     <h2 id="ovTitle"></h2>
     <div class="ov-tabs"><span class="ov-tab on">Painting →</span></div>
-    <table class="ov-specs">
-      <tr><td>Series</td><td id="ovSeries"></td></tr>
-      <tr><td>Year</td><td id="ovYear"></td></tr>
-      <tr><td>Work</td><td id="ovNum"></td></tr>
-    </table>
+    <table class="ov-specs" id="ovSpecs"></table>
     <button class="ov-timeline" id="ovTimeline">View full timeline ↓</button>
   </div>
   <div class="ov-viewer">

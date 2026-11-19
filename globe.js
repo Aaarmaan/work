@@ -158,17 +158,47 @@
     return { x: x, y: y };
   }
 
+  var markerCard = document.getElementById('markerCard');
+  var pointers = new Map();
+  var pinchDist = 0;
+  var dragDist = 0;
+
+  function nearMarker(p) {
+    return markerScreen && Math.hypot(p.x - markerScreen.x, p.y - markerScreen.y) < 22;
+  }
+
   canvas.addEventListener('pointerdown', function (e) {
-    state.dragging = true;
-    state.idle = 0;
     var p = pos(e);
-    state.lastX = p.x; state.lastY = p.y;
-    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, p);
+    dragDist = 0;
+    state.idle = 0;
+    if (pointers.size === 2) {
+      // Two fingers: pinch to zoom, not drag.
+      var pts = Array.from(pointers.values());
+      pinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      state.dragging = false;
+    } else {
+      state.dragging = true;
+      state.lastX = p.x; state.lastY = p.y;
+    }
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
   });
   canvas.addEventListener('pointermove', function (e) {
     var p = pos(e);
+    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, p);
+    if (pointers.size === 2) {
+      var pts = Array.from(pointers.values());
+      var d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      if (pinchDist > 0) {
+        state.zoom = Math.max(0.6, Math.min(2.2, state.zoom * d / pinchDist));
+      }
+      pinchDist = d;
+      state.idle = 0;
+      return;
+    }
     if (state.dragging) {
       var dx = p.x - state.lastX, dy = p.y - state.lastY;
+      dragDist += Math.abs(dx) + Math.abs(dy);
       // Dragging right pulls the surface right (effective longitude grows).
       state.targetRotY -= dx * 0.006;
       state.targetRotX = Math.max(-0.9, Math.min(0.9, state.targetRotX + dy * 0.003));
@@ -179,33 +209,44 @@
       return;
     }
     // Hover over the marker -> callout.
-    if (markerScreen) {
-      var d = Math.hypot(p.x - markerScreen.x, p.y - markerScreen.y);
-      if (d < 20) {
-        callout.innerHTML = 'Made in Tehran · Exhibited: One Week with the Iranian Society of Painters, Tehran, Iran<em>9–19 October 2026</em>';
-        callout.hidden = false;
-        canvas.style.cursor = 'pointer';
-        return;
-      }
+    if (nearMarker(p)) {
+      callout.innerHTML = 'Made in Tehran · Exhibited: One Week with the Iranian Society of Painters, Tehran, Iran<em>9–19 October 2026</em>';
+      callout.hidden = false;
+      canvas.style.cursor = 'pointer';
+      return;
     }
     callout.hidden = true;
     canvas.style.cursor = 'grab';
   });
-  function endDrag() {
-    state.dragging = false;
-    state.idle = 0;
+  function endPointer(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchDist = 0;
+    if (pointers.size === 0) {
+      state.dragging = false;
+      state.idle = 0;
+    }
   }
-  canvas.addEventListener('pointerup', endDrag);
-  canvas.addEventListener('pointerleave', function () {
-    endDrag();
+  canvas.addEventListener('pointerup', endPointer);
+  canvas.addEventListener('pointercancel', endPointer);
+  canvas.addEventListener('pointerleave', function (e) {
+    endPointer(e);
     callout.hidden = true;
   });
   canvas.addEventListener('click', function (e) {
-    if (!markerScreen) return;
+    // A drag (or pinch) ending over the marker must not open the card.
+    if (dragDist > 8 || !markerScreen) return;
     var p = pos(e);
-    if (Math.hypot(p.x - markerScreen.x, p.y - markerScreen.y) < 20) {
-      document.getElementById('timeline').scrollIntoView({ behavior: 'smooth' });
+    if (nearMarker(p)) {
+      markerCard.hidden = !markerCard.hidden;
+    } else if (!markerCard.hidden) {
+      markerCard.hidden = true;
     }
+  });
+  document.getElementById('markerClose').addEventListener('click', function () {
+    markerCard.hidden = true;
+  });
+  document.getElementById('markerLink').addEventListener('click', function () {
+    markerCard.hidden = true;
   });
 
   var pauseBtn = document.getElementById('pauseBtn');

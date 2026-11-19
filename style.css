@@ -90,10 +90,25 @@ button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 }
 .callout em { color: #999; display: block; font-size: 14px; }
 
+/* marker card: folds open when the Tehran marker is clicked */
+.marker-card {
+  position: absolute; right: 12px; bottom: 64px; z-index: 5;
+  display: flex; gap: 12px; align-items: center;
+  background: #1c1c1c; border: 1px solid #333; padding: 12px 14px;
+  max-width: 340px; box-shadow: 0 8px 30px rgba(0,0,0,.6);
+}
+.marker-card[hidden] { display: none; }
+.marker-card img { width: 64px; height: 84px; object-fit: cover; clip-path: inset(0 0 3% 0); flex-shrink: 0; }
+.mc-body { display: flex; flex-direction: column; gap: 3px; font-size: 14px; line-height: 1.45; color: #bbb; padding-right: 18px; }
+.mc-body strong { font-size: 17px; color: #f2f2f2; }
+.mc-body a { color: #8f8fff; font-size: 15px; margin-top: 4px; }
+.mc-close { position: absolute; top: 2px; right: 6px; background: none; border: none; color: #999; font-size: 14px; cursor: pointer; padding: 4px; }
+
 /* (e) timeline */
 .timeline { padding: 30px 24px 10px 24px; border-top: 1px solid #222; }
 .tl-events { position: relative; height: 110px; margin-bottom: 0; }
 .tl-event { position: absolute; top: 0; transform: translateX(-4px); max-width: 260px; }
+.tl-year { display: none; }
 .tl-event.tl-right { left: auto; right: 0; transform: none; text-align: right; }
 .tl-event.tl-right .tl-dot { margin-left: auto; }
 .tl-event .tl-label {
@@ -126,6 +141,7 @@ button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 }
 .filters-bar input::placeholder { color: #777; }
 .filters-panel { margin-top: 18px; display: flex; gap: 34px; flex-wrap: wrap; }
+.filters-panel[hidden] { display: none; }
 .filter-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .filter-group span { color: #999; font-size: 14px; margin-right: 4px; }
 .filter-group button {
@@ -145,7 +161,7 @@ button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
   aspect-ratio: 640 / 620; display: flex; align-items: center; justify-content: center;
   overflow: hidden; cursor: pointer; background: #111;
 }
-.grid img { max-width: 78%; max-height: 88%; object-fit: contain; display: block; }
+.grid img { max-width: 78%; max-height: 88%; object-fit: contain; display: block; clip-path: inset(0 0 3% 0); }
 .grid figcaption {
   display: flex; justify-content: space-between; gap: 10px;
   border-top: 1px solid #2a2a2a; padding: 12px 14px;
@@ -204,7 +220,8 @@ footer { border-top: 1px solid #222; padding: 34px 24px 20px 24px; }
   flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
   background: #0e0e0e; min-width: 0;
 }
-.ov-viewer img { max-width: 86%; max-height: 86%; object-fit: contain; }
+.ov-viewer img { width: 86%; height: 86%; object-fit: contain; clip-path: inset(0 0 3% 0); }
+.ov-viewer img.detail { object-fit: cover; }
 .ov-count {
   position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
   color: #777; font-size: 14px; letter-spacing: 1px;
@@ -229,8 +246,16 @@ footer { border-top: 1px solid #222; padding: 34px 24px 20px 24px; }
 }
 @media (max-width: 560px) {
   .grid { grid-template-columns: 1fr 1fr; }
+  .grid figcaption { font-size: 14px; padding: 10px 10px; }
+  .grid figcaption .yr { white-space: nowrap; }
   .tagline { font-size: 21px; }
   .where-left h2 { font-size: 36px; }
   .foot-grid { grid-template-columns: 1fr; }
-  .tl-event { max-width: 150px; }
+  .tl-events { position: static; height: auto; display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; }
+  .tl-event { position: static; transform: none; max-width: none; }
+  .tl-event .tl-year { display: inline; color: #c8f542; margin-right: 8px; font-size: 14px; }
+  .tl-event .tl-label { display: inline; }
+  .tl-event .tl-dot { display: none; }
+  .tl-event.tl-right { text-align: left; }
+  .tl-ruler { display: none; }
 }
