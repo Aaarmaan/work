@@ -248,6 +248,27 @@ ovPrev.onclick = function () { stepWork(-1); };
 ovNext.onclick = function () { stepWork(1); };
 document.getElementById('ovEdgePrev').onclick = function () { stepView(-1); };
 document.getElementById('ovEdgeNext').onclick = function () { stepView(1); };
+/* Swipe left/right on the painting: change the view; past the last view,
+   change the work. */
+var ovViewer = document.querySelector('.ov-viewer');
+var swipeStart = null;
+ovViewer.addEventListener('pointerdown', function (e) {
+  swipeStart = { x: e.clientX, y: e.clientY };
+});
+ovViewer.addEventListener('pointerup', function (e) {
+  if (!swipeStart || currentTab !== 'painting') { swipeStart = null; return; }
+  var dx = e.clientX - swipeStart.x, dy = e.clientY - swipeStart.y;
+  swipeStart = null;
+  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+  if (dx < 0) {
+    if (viewIndex < VIEWS - 1) stepView(1);
+    else stepWork(1);
+  } else {
+    if (viewIndex > 0) stepView(-1);
+    else stepWork(-1);
+  }
+});
+ovViewer.addEventListener('pointercancel', function () { swipeStart = null; });
 overlay.addEventListener('click', function (e) {
   if (e.target === overlay) closeOverlay();
 });

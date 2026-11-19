@@ -59,6 +59,31 @@
   var callout = document.getElementById('callout');
   var showExhib = document.getElementById('showExhib');
 
+  function latLon3(lat, lon) {
+    var la = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+    return {
+      x: Math.cos(la) * Math.sin(lo),
+      y: Math.sin(la),
+      z: Math.cos(la) * Math.cos(lo)
+    };
+  }
+
+  // Small painting cards near Tehran: one per series. Tap a card to open
+  // that work. Each card is joined to the Tehran marker by a dotted arrow.
+  var CARD_W = 46, CARD_H = 60;
+  var cards = [
+    { lat: 47, lon: 62, img: 'g1-1.jpg', work: 0, label: 'Levitation 2022' },
+    { lat: 28, lon: 64, img: 'g2-1.png', work: 5, label: 'Levitation 2024' },
+    { lat: 40, lon: 38, img: 'dr-1.jpg', work: 8, label: 'Drawing 2025' }
+  ];
+  var cardImgs = {};
+  cards.forEach(function (c) {
+    var im = new Image();
+    im.src = 'https://armanmahmoudi.ir/gallery/' + c.img;
+    cardImgs[c.img] = im;
+  });
+  var cardScreens = [];
+
   function drawMuseum(x, y, r) {
     ctx.save();
     ctx.translate(x, y);
@@ -127,6 +152,51 @@
       } else {
         callout.hidden = true;
       }
+    }
+
+    // Small painting cards near Tehran, joined to the marker by dotted arrows.
+    cardScreens = [];
+    if (showExhib && showExhib.checked) {
+      cards.forEach(function (c) {
+        var q2 = rotate(latLon3(c.lat, c.lon), state.rotY, state.rotX);
+        if (q2.z < 0.03) return;
+        var cx = CX + q2.x * R, cy = CY - q2.y * R;
+        if (markerScreen) {
+          var dx = cx - markerScreen.x, dy = cy - markerScreen.y;
+          var len = Math.hypot(dx, dy) || 1;
+          var ux = dx / len, uy = dy / len;
+          var ex = cx - ux * (CARD_W / 2 + 12), ey = cy - uy * (CARD_H / 2 + 12);
+          ctx.save();
+          ctx.setLineDash([3, 4]);
+          ctx.strokeStyle = 'rgba(200,200,200,0.85)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(markerScreen.x, markerScreen.y);
+          ctx.lineTo(ex, ey);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = 'rgba(200,200,200,0.9)';
+          ctx.translate(ex, ey);
+          ctx.rotate(Math.atan2(dy, dx));
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(-9, -4);
+          ctx.lineTo(-9, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.fillStyle = '#f2f2f2';
+        ctx.fillRect(cx - CARD_W / 2 - 3, cy - CARD_H / 2 - 3, CARD_W + 6, CARD_H + 6);
+        ctx.fillStyle = '#222';
+        ctx.fillRect(cx - CARD_W / 2, cy - CARD_H / 2, CARD_W, CARD_H);
+        var im = cardImgs[c.img];
+        if (im && im.complete && im.naturalWidth) {
+          ctx.drawImage(im, 0, 0, im.naturalWidth, im.naturalHeight * 0.96,
+            cx - CARD_W / 2, cy - CARD_H / 2, CARD_W, CARD_H);
+        }
+        cardScreens.push({ x: cx, y: cy, work: c.work, label: c.label });
+      });
     }
   }
 
@@ -208,6 +278,16 @@
       state.idle = 0;
       return;
     }
+    // Hover over a card -> label callout.
+    for (var ci = 0; ci < cardScreens.length; ci++) {
+      var cd = cardScreens[ci];
+      if (Math.abs(p.x - cd.x) < CARD_W / 2 + 6 && Math.abs(p.y - cd.y) < CARD_H / 2 + 6) {
+        callout.textContent = cd.label + ' — tap to open';
+        callout.hidden = false;
+        canvas.style.cursor = 'pointer';
+        return;
+      }
+    }
     // Hover over the marker -> callout.
     if (nearMarker(p)) {
       callout.innerHTML = 'Made in Tehran · Exhibited: One Week with the Iranian Society of Painters, Tehran, Iran<em>9–19 October 2026</em>';
@@ -236,6 +316,13 @@
     // A drag (or pinch) ending over the marker must not open the card.
     if (dragDist > 8 || !markerScreen) return;
     var p = pos(e);
+    for (var i = 0; i < cardScreens.length; i++) {
+      var cd = cardScreens[i];
+      if (Math.abs(p.x - cd.x) < CARD_W / 2 + 6 && Math.abs(p.y - cd.y) < CARD_H / 2 + 6) {
+        if (typeof openOverlay === 'function') openOverlay(cd.work);
+        return;
+      }
+    }
     if (nearMarker(p)) {
       markerCard.hidden = !markerCard.hidden;
     } else if (!markerCard.hidden) {
@@ -253,6 +340,13 @@
   pauseBtn.addEventListener('click', function () {
     state.paused = !state.paused;
     pauseBtn.textContent = state.paused ? '▶ Resume rotation' : '⏸ Pause rotation';
+  });
+  // Fold the globe away / bring it back.
+  var globeToggle = document.getElementById('globeToggle');
+  var whereRight = document.querySelector('.where-right');
+  globeToggle.addEventListener('click', function () {
+    var off = whereRight.classList.toggle('globe-off');
+    globeToggle.textContent = off ? '+ Show globe' : '− Hide globe';
   });
   document.getElementById('zoomIn').addEventListener('click', function () {
     state.zoom = Math.min(1.5, state.zoom + 0.15);
